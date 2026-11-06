@@ -1,0 +1,13 @@
+services:
+  network-healer:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      API_KEY: ${API_KEY:?Set API_KEY in .env before deploying}
+      SIMULATION_MODE: "false"
+      FLASK_DEBUG: "false"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    restart: unless-stopped

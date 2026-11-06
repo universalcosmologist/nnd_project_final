@@ -8,6 +8,7 @@ from collections import deque
 from sklearn.ensemble import IsolationForest
 import joblib
 import random
+from app.models.supervised_detector import SupervisedAnomalyDetector
 
 # Set up logging to both console and file
 if not os.path.exists('logs'):
@@ -54,6 +55,7 @@ class AnomalyDetector:
         # Initialize model accuracy
         self.current_accuracy = 95.0  # Start at 95%
         self.last_accuracy_update = datetime.now()
+        self.supervised_detector = SupervisedAnomalyDetector()
         
         # Create or load the model
         if os.path.exists(MODEL_FILE):
@@ -106,123 +108,31 @@ class AnomalyDetector:
                 logger.info(f"Not enough observations yet for training: {len(self.observations)}/50")
             
             # For demonstration - simulate some anomalies even before model is trained
-            if random.random() < 0.90:  # Increased from 0.50 to 0.90 (90% chance to simulate anomaly)
-                anomaly_type = random.choice([
-                    'high_latency', 'packet_loss', 'general_anomaly',
-                    'dns_resolution_failure', 'routing_loop', 'bandwidth_saturation',
-                    'connection_timeout', 'security_breach', 'device_failure'
-                ])
-                
-                anomalies = []
-                if anomaly_type == 'high_latency':
-                    anomalies.append({
-                        'type': 'high_latency',
-                        'score': -0.9,
-                        'details': {
-                            'latency': network_status['latency'],
-                            'threshold': 200
-                        },
-                        'detected_at': self._current_time()
-                    })
-                elif anomaly_type == 'packet_loss':
-                    anomalies.append({
-                        'type': 'packet_loss',
-                        'score': -0.9,
-                        'details': {
-                            'packet_loss': network_status['packet_loss'],
-                            'threshold': 10
-                        },
-                        'detected_at': self._current_time()
-                    })
-                elif anomaly_type == 'dns_resolution_failure':
-                    anomalies.append({
-                        'type': 'dns_resolution_failure',
-                        'score': -0.9,
-                        'details': {
-                            'domain': random.choice(['example.com', 'google.com', 'cloudflare.com']),
-                            'error': 'Cannot resolve hostname'
-                        },
-                        'detected_at': self._current_time()
-                    })
-                elif anomaly_type == 'routing_loop':
-                    anomalies.append({
-                        'type': 'routing_loop',
-                        'score': -0.9,
-                        'details': {
-                            'hops': random.randint(3, 8),
-                            'loop_ips': ['192.168.1.1', '10.0.0.1', '172.16.0.1']
-                        },
-                        'detected_at': self._current_time()
-                    })
-                elif anomaly_type == 'bandwidth_saturation':
-                    usage = random.randint(85, 99)
-                    anomalies.append({
-                        'type': 'bandwidth_saturation',
-                        'score': -0.9,
-                        'details': {
-                            'usage': usage,
-                            'threshold': 80,
-                            'bandwidth': f"{random.randint(90, 110)} Mbps"
-                        },
-                        'detected_at': self._current_time()
-                    })
-                elif anomaly_type == 'connection_timeout':
-                    anomalies.append({
-                        'type': 'connection_timeout',
-                        'score': -0.9,
-                        'details': {
-                            'service': random.choice(['Web Server', 'Database', 'API Gateway', 'Mail Server']),
-                            'timeout': f"{random.randint(30, 120)} seconds"
-                        },
-                        'detected_at': self._current_time()
-                    })
-                elif anomaly_type == 'security_breach':
-                    anomalies.append({
-                        'type': 'security_breach',
-                        'score': -0.9,
-                        'details': {
-                            'source': f"{random.randint(1, 255)}.{random.randint(1, 255)}.{random.randint(1, 255)}.{random.randint(1, 255)}",
-                            'ports': [random.randint(1, 65535) for _ in range(3)],
-                            'traffic_type': random.choice(['Port Scan', 'DoS Attempt', 'Brute Force', 'Data Exfiltration'])
-                        },
-                        'detected_at': self._current_time()
-                    })
-                elif anomaly_type == 'device_failure':
-                    anomalies.append({
-                        'type': 'device_failure',
-                        'score': -0.9,
-                        'details': {
-                            'device': random.choice(['Router-1', 'Switch-2', 'Firewall', 'Access Point-3']),
-                            'error': random.choice(['Hardware Failure', 'Configuration Corruption', 'Firmware Issue', 'Power Problem'])
-                        },
-                        'detected_at': self._current_time()
-                    })
-                else:
-                    anomalies.append({
-                        'type': 'general_anomaly',
-                        'score': -0.9,
-                        'details': {
-                            'features': dict(zip(self.features, features))
-                        },
-                        'detected_at': self._current_time()
-                    })
-                return anomalies
             
-            return []  # Return no anomalies until model is trained if no simulation
+            
+            detection_id, supervised_prediction = self.supervised_detector.observe(
+                network_status,
+                isolation_prediction=None,
+                isolation_score=None,
+            )
+            network_status['_detection_id'] = detection_id
+            network_status['_supervised_prediction'] = supervised_prediction
+            return []  # No rule-independent issue is raised while isolation training is incomplete.
         
         # Only make predictions if model is fitted
         if is_model_fitted:
             # Make prediction (1 = normal, -1 = anomaly)
             prediction = self.model.predict([features])[0]
             anomaly_score = self.model.decision_function([features])[0]
+            detection_id, supervised_prediction = self.supervised_detector.observe(
+                network_status,
+                isolation_prediction=int(prediction),
+                isolation_score=float(anomaly_score),
+            )
+            network_status['_detection_id'] = detection_id
+            network_status['_supervised_prediction'] = supervised_prediction
             
-            # No anomaly detected
-            if prediction == 1:
-                # For demonstration - occasionally override with simulated anomalies
-                if random.random() < 0.70:  # Increased from 0.30 to 0.70 (70% chance to override)
-                    prediction = -1
-                    anomaly_score = -0.75
-            
+            # No anomaly detected removed the demo purposes 
             if prediction == 1:
                 return []
             
@@ -231,132 +141,56 @@ class AnomalyDetector:
             
             # Randomly select from all possible anomaly types for more diverse demonstration
             # This makes the demo more interesting with different types of issues
-            anomaly_type = random.choice([
-                'high_latency', 'packet_loss', 'general_anomaly',
-                'dns_resolution_failure', 'routing_loop', 'bandwidth_saturation',
-                'connection_timeout', 'security_breach', 'device_failure'
-            ])
-            
-            if anomaly_type == 'high_latency' or (network_status['latency'] > 200 and not anomalies):
+        
+            # Check 1: High Latency
+            if network_status.get('latency', 0) > 200:
                 anomalies.append({
-                    'type': 'high_latency',
-                    'score': float(anomaly_score),
-                    'details': {
-                        'latency': network_status['latency'],
-                        'threshold': 200
-                    },
-                    'detected_at': self._current_time()
-                })
-            
-            elif anomaly_type == 'packet_loss' or (network_status['packet_loss'] > 10 and not anomalies):
+                'type': 'high_latency',
+                'score': float(anomaly_score),
+                'detection_id': detection_id,
+                'model_predictions': {
+                    'isolation_forest': {'predicted_anomaly': True, 'score': float(anomaly_score)},
+                    'supervised': supervised_prediction,
+                },
+                'details': {
+                    'latency': network_status['latency'],
+                    'threshold': 200
+                },
+                'detected_at': self._current_time()
+            })
+        
+            # Check 2: Packet Loss
+            if network_status.get('packet_loss', 0) > 10:
                 anomalies.append({
-                    'type': 'packet_loss',
-                    'score': float(anomaly_score),
-                    'details': {
-                        'packet_loss': network_status['packet_loss'],
-                        'threshold': 10
-                    },
-                    'detected_at': self._current_time()
-                })
-            
-            elif anomaly_type == 'dns_resolution_failure':
+                'type': 'packet_loss',
+                'score': float(anomaly_score),
+                'detection_id': detection_id,
+                'model_predictions': {
+                    'isolation_forest': {'predicted_anomaly': True, 'score': float(anomaly_score)},
+                    'supervised': supervised_prediction,
+                },
+                'details': {
+                    'packet_loss': network_status['packet_loss'],
+                    'threshold': 10
+                },
+                'detected_at': self._current_time()
+            })
+        
+            # If no specific anomaly matched, but model says anomaly
+            if len(anomalies) == 0 and prediction==-1:
                 anomalies.append({
-                    'type': 'dns_resolution_failure',
-                    'score': float(anomaly_score),
-                    'details': {
-                        'domain': random.choice(['example.com', 'google.com', 'cloudflare.com']),
-                        'error': 'Cannot resolve hostname'
-                    },
-                    'detected_at': self._current_time()
-                })
-            
-            elif anomaly_type == 'routing_loop':
-                anomalies.append({
-                    'type': 'routing_loop',
-                    'score': float(anomaly_score),
-                    'details': {
-                        'hops': random.randint(3, 8),
-                        'loop_ips': ['192.168.1.1', '10.0.0.1', '172.16.0.1']
-                    },
-                    'detected_at': self._current_time()
-                })
-            
-            elif anomaly_type == 'bandwidth_saturation':
-                usage = random.randint(85, 99)
-                anomalies.append({
-                    'type': 'bandwidth_saturation',
-                    'score': float(anomaly_score),
-                    'details': {
-                        'usage': usage,
-                        'threshold': 80,
-                        'bandwidth': f"{random.randint(90, 110)} Mbps"
-                    },
-                    'detected_at': self._current_time()
-                })
-            
-            elif anomaly_type == 'connection_timeout':
-                anomalies.append({
-                    'type': 'connection_timeout',
-                    'score': float(anomaly_score),
-                    'details': {
-                        'service': random.choice(['Web Server', 'Database', 'API Gateway', 'Mail Server']),
-                        'timeout': f"{random.randint(30, 120)} seconds"
-                    },
-                    'detected_at': self._current_time()
-                })
-            
-            elif anomaly_type == 'security_breach':
-                anomalies.append({
-                    'type': 'security_breach',
-                    'score': float(anomaly_score),
-                    'details': {
-                        'source': f"{random.randint(1, 255)}.{random.randint(1, 255)}.{random.randint(1, 255)}.{random.randint(1, 255)}",
-                        'ports': [random.randint(1, 65535) for _ in range(3)],
-                        'traffic_type': random.choice(['Port Scan', 'DoS Attempt', 'Brute Force', 'Data Exfiltration'])
-                    },
-                    'detected_at': self._current_time()
-                })
-            
-            elif anomaly_type == 'device_failure':
-                anomalies.append({
-                    'type': 'device_failure',
-                    'score': float(anomaly_score),
-                    'details': {
-                        'device': random.choice(['Router-1', 'Switch-2', 'Firewall', 'Access Point-3']),
-                        'error': random.choice(['Hardware Failure', 'Configuration Corruption', 'Firmware Issue', 'Power Problem'])
-                    },
-                    'detected_at': self._current_time()
-                })
-            
-            elif len(anomalies) == 0 and prediction == -1:
-                # General anomaly without specific cause
-                anomalies.append({
-                    'type': 'general_anomaly',
-                    'score': float(anomaly_score),
-                    'details': {
-                        'features': dict(zip(self.features, features))
-                    },
-                    'detected_at': self._current_time()
-                })
-            
-        else:
-            # If model isn't fitted, simulate some anomalies
-            if random.random() < 0.30:  # 30% chance to generate anomaly
-                anomaly_type = random.choice([
-                    'high_latency', 'packet_loss', 'general_anomaly',
-                    'dns_resolution_failure', 'routing_loop', 'bandwidth_saturation',
-                    'connection_timeout', 'security_breach', 'device_failure'
-                ])
-                
-                anomalies = []
-                anomalies.append({
-                    'type': anomaly_type,
-                    'score': -0.8,
-                    'details': self._generate_details_for_anomaly_type(anomaly_type, network_status),
-                    'detected_at': self._current_time()
-                })
-            else:
-                return []
+                'type': 'general_anomaly',
+                'score': float(anomaly_score),
+                'detection_id': detection_id,
+                'model_predictions': {
+                    'isolation_forest': {'predicted_anomaly': True, 'score': float(anomaly_score)},
+                    'supervised': supervised_prediction,
+                },
+                'details': {
+                    'features': dict(zip(self.features, features))
+                },
+                'detected_at': self._current_time()
+            })
         
         # Log the anomaly
         if anomalies:
@@ -396,12 +230,15 @@ class AnomalyDetector:
         
         logger.info("Model training completed")
     
-    def record_feedback(self, anomaly_id, is_real_anomaly):
-        """Record user feedback on anomaly detection results for model improvement"""
-        # This would be connected to UI feedback
-        # We could use this to adjust model parameters or create labeled data
-        logger.info(f"Received feedback for anomaly {anomaly_id}: is_real_anomaly={is_real_anomaly}")
-        # In a more sophisticated implementation, this would be used to improve the model
+    def record_feedback(self, detection_id, is_real_anomaly, source, verifier, issue_id=None):
+        """Store independently verified feedback; this never changes live decisions."""
+        return self.supervised_detector.record_external_verified_label(
+            detection_id=detection_id,
+            actual_anomaly=is_real_anomaly,
+            source=source,
+            verifier=verifier,
+            issue_id=issue_id,
+        )
 
     def _current_time(self):
         """Helper to get current time in ISO format"""
@@ -458,19 +295,11 @@ class AnomalyDetector:
             }
 
     def get_model_accuracy(self):
-        """Get current model accuracy (simulated)"""
-        current_time = datetime.now()
-        
-        # Update accuracy every 10 seconds
-        if (current_time - self.last_accuracy_update).total_seconds() >= 10:
-            # Generate a small random change (-0.3 to +0.3)
-            change = (random.random() - 0.5) * 0.6
-            
-            # Update accuracy ensuring it stays between 93 and 97
-            self.current_accuracy = max(93.0, min(97.0, self.current_accuracy + change))
-            self.last_accuracy_update = current_time
-        
-        return round(self.current_accuracy, 2)
+        """Return measured candidate holdout balanced accuracy, or None if unavailable."""
+        metrics = self.supervised_detector.candidate_metrics
+        if not metrics or not isinstance(metrics.get('balanced_accuracy'), (int, float)):
+            return None
+        return round(float(metrics['balanced_accuracy']) * 100, 2)
 
 # For testing
 if __name__ == "__main__":
@@ -484,4 +313,4 @@ if __name__ == "__main__":
         }
         anomalies = detector.detect_anomalies(status)
         if anomalies:
-            print(f"Detected anomalies: {anomalies}") 
+            logger.info(f"Detected anomalies: {anomalies}")

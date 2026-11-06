@@ -1,21 +1,14 @@
 from flask import Blueprint, render_template, jsonify, request, current_app
 from app.network.monitor import get_network_status, scan_local_network
-from app.models.anomaly_detector import AnomalyDetector
-from app.healing.resolver import NetworkResolver
+from app.services import anomaly_detector, network_resolver
 import os
 import json
-import time
-import uuid
 from datetime import datetime
 from app import socketio
 from flask_socketio import emit
 import logging
 
 main_bp = Blueprint('main', __name__)
-
-# Initialize components as global variables
-anomaly_detector = AnomalyDetector()
-network_resolver = NetworkResolver()
 
 # Track connected clients
 connected_clients = {}
@@ -24,18 +17,19 @@ connected_clients = {}
 def emit_active_issues():
     """Emit active issues to all clients"""
     try:
-        print("Emitting active issues update...")
+        if not socketio.server:
+            return
         issues = network_resolver.get_active_issues()
-        print(f"Active issues count: {len(issues)}")
         socketio.emit('active_issues_update', issues, namespace='/')
-        print("Active issues emission completed")
     except Exception as e:
-        print(f"Error emitting active issues: {e}")
+        logging.error(f"Error emitting active issues: {e}")
 
 def emit_resolved_issues():
     """Emit resolved issues to all clients"""
     try:
-        print("Emitting resolved issues update...")
+        from app import socketio
+        if socketio is None or not socketio.server:
+            return
         # Force reload the resolution history from file to ensure we have the latest data
         network_resolver._load_resolution_history()
         
@@ -45,28 +39,29 @@ def emit_resolved_issues():
                 with open(os.path.join('data', 'healing', 'resolution_history.json'), 'r') as f:
                     history = json.load(f)
             except Exception as e:
-                print(f"Error loading resolution history: {e}")
+                logging.error(f"Error loading resolution history: {e}")
         
-        print(f"Resolved issues count: {len(history)}")
         socketio.emit('resolved_issues_update', history, namespace='/')
-        print("Resolved issues emission completed")
     except Exception as e:
-        print(f"Error emitting resolved issues: {e}")
+            logging.error(f"Error emitting resolved issues: {e}")
 
 def emit_logs():
     """Emit system logs to all clients"""
+    if not socketio.server:
+        return
     logs = get_latest_logs_data()
     socketio.emit('logs_update', logs, namespace='/')
 
 def emit_network_status():
     """Emit network status to all clients"""
+    if not socketio.server:
+        return
     status = get_network_status()
     socketio.emit('network_status_update', status, namespace='/')
 
 # Function to ensure callbacks are registered - now defined after the functions it uses
 def register_socketio_callbacks():
     """Register all Socket.IO callbacks with the NetworkResolver"""
-    print("Registering Socket.IO callbacks with NetworkResolver...")
     # Clear any existing callbacks to avoid duplicates
     network_resolver.update_callbacks = []
     network_resolver.resolution_callbacks = []
@@ -74,8 +69,6 @@ def register_socketio_callbacks():
     # Register callbacks
     network_resolver.register_update_callback(emit_active_issues)
     network_resolver.register_resolution_callback(emit_resolved_issues)
-    print(f"Registered {len(network_resolver.update_callbacks)} update callbacks")
-    print(f"Registered {len(network_resolver.resolution_callbacks)} resolution callbacks")
 
 # Socket.IO event handlers - moved after the function definitions
 @socketio.on('connect')
@@ -121,7 +114,6 @@ def handle_heartbeat(data):
 @socketio.on('request_data_refresh')
 def handle_data_refresh():
     """Handle client request for data refresh"""
-    print("Client requested data refresh")
     emit_active_issues()
     emit_resolved_issues()
     emit_logs()
@@ -141,6 +133,11 @@ def index():
     """Main dashboard view"""
     return render_template('index.html')
 
+@main_bp.route('/healthz')
+def healthz():
+    """Liveness endpoint for container platforms and reverse proxies."""
+    return jsonify({'status': 'ok'}), 200
+
 @main_bp.route('/api/network/status')
 def network_status():
     """API endpoint to get current network status"""
@@ -152,6 +149,17 @@ def network_status_alt():
     """Alternative API endpoint for network status (for frontend compatibility)"""
     status = get_network_status()
     return jsonify(status)
+
+@main_bp.route('/api/agents')
+def get_agents():
+    from app.agents.manager import agent_manager
+    return jsonify(agent_manager.get_all_agents())
+
+@main_bp.route('/api/clients')
+def get_clients():
+    """Compatibility endpoint for callers that use clients for agents."""
+    from app.agents.manager import agent_manager
+    return jsonify(agent_manager.get_all_agents())
 
 @main_bp.route('/api/network/history')
 def network_history():
@@ -174,8 +182,8 @@ def network_devices():
 @main_bp.route('/api/healing/issues')
 def get_issues():
     """Get current detected issues"""
-    # Force reload issues from file to ensure we have the latest state
-    network_resolver._load_active_issues()
+    # The resolver owns the live state. Reloading this file on every dashboard
+    # poll can resurrect a command that was already dispatched in this process.
     issues = network_resolver.get_active_issues()
     return jsonify(issues)
 
@@ -189,38 +197,40 @@ def get_resolved_issues():
     history = network_resolver.resolution_history.copy() if network_resolver.resolution_history else []
     
     # Add debugging info
-    print(f"Returning {len(history)} resolved issues")
-    
     return jsonify(history)
 
 @main_bp.route('/api/healing/resolve', methods=['POST'])
 def resolve_issue():
     """Manually trigger resolution for an issue"""
+    "how is the window alert visible on which condition"
     try:
         data = request.json
         if not data or 'issue_id' not in data:
-            print(f"Invalid request data: {data}")
+            logging.warning(f"Invalid resolution request data: {data}")
             return jsonify({'success': False, 'message': 'Missing issue_id in request'}), 400
             
         issue_id = data.get('issue_id')
-        print(f"Attempting to resolve issue: {issue_id}")
+        logging.info(f"Manual resolution requested for issue {issue_id}")
         
-        result = network_resolver.resolve_issue(issue_id)
-        print(f"Resolution result: {result}")
+        # Get the issue from the resolver
+        issue = network_resolver.active_issues.get(issue_id)
+        if not issue:
+            return jsonify({'success': False, 'message': 'Issue not found'}), 404
         
-        # Force reload active issues after resolution attempt
-        network_resolver._load_active_issues()
-        
-        # Emit updates
-        emit_active_issues()
-        emit_resolved_issues()
-        emit_logs()
-        
-        return jsonify(result)
+        # Check if this issue is agent‑managed
+        if 'agent_id' in issue.get('anomaly', {}):
+            from app.agents.handlers import dispatch_issue_to_agent
+            result = dispatch_issue_to_agent(issue_id, bypass_rate_limit=True)
+            status_code = 200 if result['success'] else 400
+            return jsonify(result), status_code
+        else:
+            return jsonify({
+                'success': False,
+                'message': 'Issue has no owning agent and cannot be dispatched',
+            }), 409
     except Exception as e:
-        print(f"Error resolving issue: {str(e)}")
+        logging.error(f"Error resolving issue: {str(e)}")
         return jsonify({'success': False, 'message': f'Server error: {str(e)}'}), 500
-
 @main_bp.route('/api/logs')
 def get_latest_logs():
     """Get latest system logs"""
@@ -258,9 +268,9 @@ def get_latest_logs_data():
                                 "message": message
                             })
                     except Exception as e:
-                        print(f"Error parsing log line: {e}")
+                        logging.error(f"Error parsing log line: {e}")
         except Exception as e:
-            print(f"Error reading log file: {e}")
+            logging.error(f"Error reading log file: {e}")
     
     # If no logs found in file or file doesn't exist, use simulated logs
     if not logs:

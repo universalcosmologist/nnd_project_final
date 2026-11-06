@@ -1,13 +1,24 @@
 import os
 import logging
 import json
+import math
 import uuid
 import subprocess
 import platform
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 import threading
 import random
+from app.healing.ground_truth import (
+    BOOLEAN_VERIFICATION_SAMPLES,
+    MAX_AGENT_CLOCK_SKEW_SECONDS,
+    NUMERIC_VERIFICATION_SAMPLES,
+    VERIFICATION_WINDOW_SECONDS,
+    get_approved_metric_profile,
+    get_issue_metric_target_id,
+    load_calibration_profiles,
+    parse_iso_timestamp,
+)
 
 # Set up logging to both console and file
 if not os.path.exists('logs'):
@@ -95,34 +106,49 @@ class NetworkResolver:
     
     def _trigger_update_callbacks(self):
         """Trigger all registered update callbacks"""
-        logger.info(f"Triggering {len(self.update_callbacks)} update callbacks...")
         for callback in self.update_callbacks:
             try:
-                logger.info(f"Executing update callback: {callback.__name__ if hasattr(callback, '__name__') else 'anonymous'}")
-                callback(self.get_model_accuracy())
-                logger.info(f"Successfully executed update callback")
+                callback()
             except Exception as e:
                 logger.error(f"Error in update callback: {e}")
     
     def _trigger_resolution_callbacks(self):
         """Trigger all registered resolution callbacks"""
-        logger.info(f"Triggering {len(self.resolution_callbacks)} resolution callbacks...")
         for callback in self.resolution_callbacks:
             try:
-                logger.info(f"Executing resolution callback: {callback.__name__ if hasattr(callback, '__name__') else 'anonymous'}")
                 callback()
-                logger.info(f"Successfully executed resolution callback")
             except Exception as e:
                 logger.error(f"Error in resolution callback: {e}")
     
     def _load_active_issues(self):
-        """Force reload active issues from file"""
         if os.path.exists(ISSUES_FILE):
             try:
                 with open(ISSUES_FILE, 'r') as f:
-                    self.active_issues = json.load(f)
+                    content = f.read().strip()
+                    if not content:
+                        self.active_issues = {}
+                    else:
+                        loaded = json.loads(content)
+                        # Ensure loaded data is a dict, not a list
+                        if isinstance(loaded, dict):
+                            self.active_issues = loaded
+                            # A command id only lives in the current server
+                            # process. After a restart, an in-flight command
+                            # cannot receive a result, so make those issues
+                            # eligible for dispatch when the agent reconnects.
+                            for issue in self.active_issues.values():
+                                if issue.get('status') == 'awaiting_agent':
+                                    issue['status'] = 'pending'
+                                    issue.pop('command_id', None)
+                        else:
+                            logger.warning(f"Active issues file contains {type(loaded).__name__}, expected dict. Resetting.")
+                            self.active_issues = {}
+            except json.JSONDecodeError:
+                self.active_issues = {}
+                logger.warning("Active issues file was corrupted, resetting")
             except Exception as e:
                 logger.error(f"Error loading active issues: {e}")
+                self.active_issues = {}
     
     def _save_active_issues(self):
         """Save active issues to file"""
@@ -130,6 +156,423 @@ class NetworkResolver:
             json.dump(self.active_issues, f, indent=2)
         # Trigger update callbacks
         self._trigger_update_callbacks()
+
+    def update_issue_status(self, issue_id, success, message=None, command_id=None):
+        """Record execution status; successful execution still requires verification."""
+        if issue_id not in self.active_issues:
+            logger.warning(f"Issue {issue_id} not in active issues")
+            return False
+        issue = self.active_issues[issue_id]
+        if command_id and issue.get('command_id') != command_id:
+            logger.warning("Ignoring stale result for command %s on issue %s", command_id, issue_id)
+            return False
+        # Ignore stale results from an earlier retry.
+        if issue.get('status') != 'awaiting_agent':
+            logger.warning("Ignoring command result for issue %s in state %s", issue_id, issue.get('status'))
+            return False
+        now = datetime.now().isoformat()
+        if success:
+            issue['status'] = 'awaiting_verification'
+            issue.setdefault('verification', {})['execution_completed_at'] = now
+            logger.info("Issue %s command executed; waiting for metric verification", issue_id)
+        else:
+            issue['status'] = 'failed'
+            logger.warning("Issue %s command execution failed", issue_id)
+
+        if issue.get('resolution_actions'):
+            issue['resolution_actions'][-1]['result'] = {
+                'success': success,
+                'message': message,
+                'completed_at': now,
+            }
+        issue['execution_result'] = {'success': success, 'message': message, 'completed_at': now}
+        if not success:
+            self._record_agent_outcome(issue, 'execution_failed', None)
+        self._save_active_issues()
+        if not success:
+            self._save_resolution_history()
+        self._trigger_update_callbacks()
+        return True
+
+    def add_agent_verification_sample(self, issue_id, metrics, required_samples=None):
+        """Collect follow-up metrics and finalize an agent issue after enough samples."""
+        issue = self.active_issues.get(issue_id)
+        if not issue or issue.get('status') != 'awaiting_verification':
+            return None
+
+        verification = issue.setdefault('verification', {})
+        samples = verification.setdefault('samples', [])
+        agent_id = issue.get('anomaly', {}).get('agent_id')
+        if metrics.get('agent_id') != agent_id:
+            return 'collecting'
+
+        received_at = datetime.now(timezone.utc)
+        sample_timestamp = metrics.get('timestamp')
+        evidence_valid = isinstance(sample_timestamp, str)
+        parsed_timestamp = None
+        if evidence_valid:
+            try:
+                parsed_timestamp = parse_iso_timestamp(sample_timestamp)
+                evidence_valid = abs((received_at - parsed_timestamp).total_seconds()) <= MAX_AGENT_CLOCK_SKEW_SECONDS
+            except (TypeError, ValueError):
+                evidence_valid = False
+
+        completed_at = verification.get('execution_completed_at')
+        if completed_at:
+            try:
+                evidence_valid = evidence_valid and received_at > parse_iso_timestamp(completed_at)
+            except (TypeError, ValueError):
+                evidence_valid = False
+
+        if parsed_timestamp and samples:
+            previous_timestamp = samples[-1].get('timestamp')
+            try:
+                if previous_timestamp and parsed_timestamp <= parse_iso_timestamp(previous_timestamp):
+                    return 'collecting'
+            except (TypeError, ValueError):
+                evidence_valid = False
+
+        if samples:
+            try:
+                first_received = parse_iso_timestamp(samples[0]['received_at'])
+                if (received_at - first_received).total_seconds() > VERIFICATION_WINDOW_SECONDS:
+                    samples.clear()
+            except (KeyError, TypeError, ValueError):
+                samples.clear()
+
+        sample = {
+            key: metrics[key]
+            for key in (
+                'latency_ms', 'packet_loss_pct', 'bandwidth_mbps',
+                'dns_ok', 'connection_ok', 'interface_metrics',
+                'agent_id', 'timestamp', 'metric_targets',
+            )
+            if key in metrics
+        }
+        sample['received_at'] = received_at.isoformat()
+        sample['evidence_valid'] = evidence_valid
+        samples.append(sample)
+
+        anomaly_type = issue.get('anomaly', {}).get('type')
+        default_required_samples = (
+            BOOLEAN_VERIFICATION_SAMPLES
+            if anomaly_type in ('dns_resolution_failure', 'connection_timeout')
+            else NUMERIC_VERIFICATION_SAMPLES
+        )
+        required_samples = required_samples or default_required_samples
+        verification['samples'] = samples[-required_samples:]
+        if len(verification['samples']) < required_samples:
+            self._save_active_issues()
+            return 'collecting'
+
+        outcome = self._evaluate_agent_issue(issue, verification['samples'])
+        status = 'verified' if outcome is True else 'unresolved' if outcome is False else 'inconclusive'
+        self._record_agent_outcome(issue, status, outcome)
+        issue['verification']['status'] = status
+        issue['verification']['completed_at'] = datetime.now().isoformat()
+        if outcome is True:
+            issue['status'] = 'resolved'
+            ground_truth = issue.get('anomaly', {}).get('ground_truth', {})
+            if ground_truth.get('status') == 'verified' and ground_truth.get('actual_anomaly') is True:
+                self._record_verified_detection_label(issue, actual_anomaly=True)
+            self.active_issues.pop(issue_id, None)
+            logger.info("Issue %s verified resolved by follow-up metrics", issue_id)
+        else:
+            issue['status'] = 'verification_failed' if outcome is False else 'verification_inconclusive'
+            logger.warning("Issue %s verification result: %s", issue_id, status)
+
+        self._save_active_issues()
+        self._save_resolution_history()
+        self._trigger_update_callbacks()
+        self._trigger_resolution_callbacks()
+        return status
+
+    def evaluate_pre_action_baseline(self, issue):
+        """Return True only when approved profiles prove the triggering metrics healthy."""
+        anomaly = issue.get('anomaly', {})
+        agent_id = anomaly.get('agent_id')
+        details = anomaly.get('details', {})
+        if not isinstance(agent_id, str) or not isinstance(details, dict):
+            return None
+        try:
+            profiles = load_calibration_profiles()
+        except (OSError, ValueError, TypeError):
+            logger.exception("Could not load calibration profiles")
+            return None
+
+        metric_snapshot = anomaly.get('metric_snapshot', {})
+        if not isinstance(metric_snapshot, dict):
+            metric_snapshot = {}
+
+        if anomaly.get('type') == 'dns_resolution_failure':
+            target_id = get_issue_metric_target_id(anomaly, 'dns_ok')
+            value = metric_snapshot.get('dns_ok')
+            if target_id and isinstance(value, bool):
+                return value
+            return None
+        if anomaly.get('type') == 'connection_timeout':
+            target_id = get_issue_metric_target_id(anomaly, 'connection_ok')
+            value = metric_snapshot.get('connection_ok')
+            if target_id and isinstance(value, bool):
+                return value
+            return None
+        if anomaly.get('type') == 'high_latency':
+            metrics = {'latency_ms': metric_snapshot.get('latency_ms', details.get('latency'))}
+        elif anomaly.get('type') == 'packet_loss':
+            metrics = {'packet_loss_pct': metric_snapshot.get('packet_loss_pct', details.get('packet_loss'))}
+        elif anomaly.get('type') == 'bandwidth_saturation':
+            metrics = {'utilization_pct': details.get('average_utilization_pct')}
+        elif anomaly.get('type') == 'general_anomaly':
+            feature_map = {
+                'latency': ('latency_ms', 'latency'),
+                'packet_loss': ('packet_loss_pct', 'packet_loss'),
+                'bandwidth_usage': ('bandwidth_mbps', 'bandwidth_usage'),
+            }
+            features = details.get('features', {})
+            if not isinstance(features, dict) or not features:
+                return None
+            metrics = {}
+            for feature_name, (metric_name, snapshot_key) in feature_map.items():
+                if feature_name in features:
+                    metrics[metric_name] = metric_snapshot.get(snapshot_key, features[feature_name])
+            if len(metrics) != len(features):
+                return None
+        else:
+            return None
+
+        for metric_name, value in metrics.items():
+            target_id = get_issue_metric_target_id(anomaly, metric_name)
+            profile = get_approved_metric_profile(agent_id, metric_name, target_id, profiles) if target_id else None
+            if (
+                profile is None
+                or isinstance(value, bool)
+                or not isinstance(value, (int, float))
+                or not math.isfinite(value)
+                or value > profile['upper_bound']
+            ):
+                return False if profile is not None and isinstance(value, (int, float)) and value > profile['upper_bound'] else None
+        return bool(metrics)
+
+    def record_false_positive(self, issue_id):
+        """Record an already-healthy detection without sending a corrective action."""
+        issue = self.active_issues.get(issue_id)
+        if not issue:
+            return False
+        issue['status'] = 'false_positive'
+        issue.setdefault('verification', {})['status'] = 'false_positive'
+        issue['verification']['completed_at'] = datetime.now().isoformat()
+        self._record_agent_outcome(issue, 'false_positive', None)
+        self._record_verified_detection_label(issue, actual_anomaly=False, verification_status='false_positive')
+        self.active_issues.pop(issue_id, None)
+        self._save_active_issues()
+        self._save_resolution_history()
+        self._trigger_resolution_callbacks()
+        return True
+
+    def _record_verified_detection_label(self, issue, actual_anomaly, verification_status='verified'):
+        """Record detection truth separately from corrective-action success."""
+        anomaly = issue.get('anomaly', {})
+        detection_id = anomaly.get('detection_id')
+        if not detection_id:
+            return None
+        try:
+            from app.services import anomaly_detector
+            return anomaly_detector.supervised_detector.record_verified_label(
+                detection_id=detection_id,
+                actual_anomaly=actual_anomaly,
+                verification_status=verification_status,
+                label_source='approved_profile_and_verification',
+                issue_id=issue.get('id'),
+                verifier='ground_truth_policy',
+            )
+        except (KeyError, ValueError, OSError):
+            logger.warning("Could not attach verified label to detection %s", detection_id, exc_info=True)
+            return None
+
+    def _evaluate_agent_issue(self, issue, samples):
+        """Return True/False only when approved target-specific profiles verify the issue."""
+        anomaly = issue.get('anomaly', {})
+        anomaly_type = anomaly.get('type')
+        agent_id = anomaly.get('agent_id')
+        if not isinstance(agent_id, str) or not samples:
+            return None
+        if any(sample.get('evidence_valid') is False for sample in samples):
+            return None
+        try:
+            profiles = load_calibration_profiles()
+        except (OSError, ValueError, TypeError):
+            logger.exception("Could not load calibration profiles")
+            return None
+
+        def numeric_check(metric_name, target_id=None):
+            if target_id is None:
+                target_id = get_issue_metric_target_id(anomaly, metric_name)
+            profile = get_approved_metric_profile(agent_id, metric_name, target_id, profiles) if target_id else None
+            if profile is None:
+                return None
+            upper_bound = profile['upper_bound']
+            observed = []
+            for sample in samples:
+                if sample.get('agent_id') != agent_id:
+                    return None
+                if metric_name == 'utilization_pct':
+                    interface_name = anomaly.get('details', {}).get('interface')
+                    interfaces = sample.get('interface_metrics')
+                    if not isinstance(interfaces, list):
+                        return None
+                    metric = next((
+                        item.get('utilization_pct')
+                        for item in interfaces
+                        if isinstance(item, dict) and item.get('name') == interface_name
+                    ), None)
+                else:
+                    if sample.get('metric_targets', {}).get(metric_name) != target_id:
+                        return None
+                    metric = sample.get(metric_name)
+                if (
+                    isinstance(metric, bool)
+                    or not isinstance(metric, (int, float))
+                    or not math.isfinite(metric)
+                ):
+                    return None
+                observed.append(metric)
+            return all(value <= upper_bound for value in observed)
+
+        def boolean_check(metric_name):
+            target_id = get_issue_metric_target_id(anomaly, metric_name)
+            if target_id is None:
+                return None
+            outcomes = []
+            for sample in samples:
+                if sample.get('agent_id') != agent_id:
+                    return None
+                if sample.get('metric_targets', {}).get(metric_name) != target_id:
+                    return None
+                value = sample.get(metric_name)
+                if not isinstance(value, bool):
+                    return None
+                outcomes.append(value)
+            return all(outcomes)
+
+        if anomaly_type == 'dns_resolution_failure':
+            return boolean_check('dns_ok')
+        if anomaly_type == 'connection_timeout':
+            return boolean_check('connection_ok')
+        if anomaly_type == 'high_latency':
+            return numeric_check('latency_ms')
+        if anomaly_type == 'packet_loss':
+            return numeric_check('packet_loss_pct')
+        if anomaly_type == 'bandwidth_saturation':
+            utilization_result = numeric_check('utilization_pct')
+            if utilization_result is not True:
+                return utilization_result
+            impact_results = [
+                numeric_check('latency_ms'),
+                numeric_check('packet_loss_pct'),
+                boolean_check('connection_ok'),
+            ]
+            if any(result is None for result in impact_results):
+                return None
+            return all(impact_results)
+        if anomaly_type == 'general_anomaly':
+            details = anomaly.get('details', {})
+            features = details.get('features', {}) if isinstance(details, dict) else {}
+            metric_map = {
+                'latency': 'latency_ms',
+                'packet_loss': 'packet_loss_pct',
+                'bandwidth_usage': 'bandwidth_mbps',
+            }
+            checks = []
+            for feature_name in features:
+                metric_name = metric_map.get(feature_name)
+                if metric_name is None:
+                    return None
+                checks.append(numeric_check(metric_name))
+            return all(checks) if checks else None
+        return None
+
+    def mark_verification_timed_out(self, issue_id):
+        """Keep an unverified issue open and record that evidence was unavailable."""
+        issue = self.active_issues.get(issue_id)
+        if not issue or issue.get('status') != 'awaiting_verification':
+            return False
+        issue['status'] = 'verification_inconclusive'
+        issue.setdefault('verification', {})['status'] = 'inconclusive'
+        issue['verification']['completed_at'] = datetime.now().isoformat()
+        self._record_agent_outcome(issue, 'inconclusive', None)
+        self._save_active_issues()
+        self._save_resolution_history()
+        self._trigger_update_callbacks()
+        self._trigger_resolution_callbacks()
+        return True
+
+    def _record_agent_outcome(self, issue, verification_status, resolved):
+        """Persist action context and verified outcome for later selection analysis."""
+        verification = issue.get('verification', {})
+        decision = issue.get('resolution_decision', {})
+        entry = {
+            'issue_id': issue['id'],
+            'anomaly_type': issue.get('anomaly', {}).get('type'),
+            'anomaly': issue.get('anomaly'),
+            'action_id': decision.get('action_id'),
+            'rationale': decision.get('rationale'),
+            'execution_result': issue.get('execution_result'),
+            'baseline_metrics': verification.get('baseline'),
+            'verification_samples': verification.get('samples', []),
+            'verification_status': verification_status,
+            'resolution_success': resolved,
+            'detected_at': issue.get('detected_at'),
+            'resolved_at': datetime.now().isoformat() if resolved is True else None,
+            'resolution_actions': issue.get('resolution_actions', []),
+        }
+        self.resolution_history.append(entry)
+
+    def mark_command_dispatched(self, issue_id, command_id, command, action_id=None, baseline_metrics=None):
+        """Persist an agent command that is waiting for a result."""
+        issue = self.active_issues.get(issue_id)
+        if not issue:
+            raise KeyError(f"Issue {issue_id} not found")
+        issue['status'] = 'awaiting_agent'
+        issue['command_id'] = command_id
+        issue['last_command_sent'] = datetime.now().isoformat()
+        issue['resolution_attempts'] = issue.get('resolution_attempts', 0) + 1
+        issue['verification'] = {
+            'action_id': action_id,
+            'baseline': baseline_metrics or {},
+            'samples': [],
+            'started_at': issue['last_command_sent'],
+        }
+        issue.setdefault('resolution_actions', []).append({
+            'timestamp': issue['last_command_sent'],
+            'strategy': 'Agent command dispatched',
+            'commands': [command],
+            'result': {'success': None, 'message': 'Waiting for agent response'}
+        })
+        self._save_active_issues()
+
+    def mark_command_dispatch_failed(self, issue_id, message):
+        """Return an issue to the retry queue if the Socket.IO event failed."""
+        issue = self.active_issues.get(issue_id)
+        if not issue:
+            return
+        issue['status'] = 'pending'
+        issue.pop('command_id', None)
+        issue['last_dispatch_error'] = message
+        self._save_active_issues()
+
+    def get_retryable_agent_issue_ids(self, agent_id=None):
+        """Return pending agent issues newest-first, with a stable ID tiebreaker."""
+        retryable = [
+            (issue_id, issue) for issue_id, issue in self.active_issues.items()
+            if issue.get('anomaly', {}).get('agent_id')
+            and (agent_id is None or issue['anomaly']['agent_id'] == agent_id)
+            and issue.get('status') in ('new', 'pending')
+        ]
+        retryable.sort(
+            key=lambda entry: (entry[1].get('detected_at', ''), entry[0]),
+            reverse=True
+        )
+        return [issue_id for issue_id, _ in retryable]
     
     def _save_resolution_history(self):
         """Save resolution history to file"""
@@ -141,9 +584,6 @@ class NetworkResolver:
             if self.resolution_history:
                 with open(HISTORY_FILE, 'w') as f:
                     json.dump(self.resolution_history, f, indent=2)
-                logger.info(f"Saved {len(self.resolution_history)} items to resolution history")
-                # Always trigger resolution callbacks after saving
-                self._trigger_resolution_callbacks()
             else:
                 logger.warning("No resolution history to save")
         except Exception as e:
@@ -157,7 +597,6 @@ class NetworkResolver:
                     loaded_history = json.load(f)
                     if isinstance(loaded_history, list):
                         self.resolution_history = loaded_history
-                        logger.info(f"Loaded {len(self.resolution_history)} items from resolution history")
                     else:
                         logger.error(f"Invalid resolution history format: expected list, got {type(loaded_history)}")
             except Exception as e:
@@ -168,15 +607,18 @@ class NetworkResolver:
                     try:
                         import shutil
                         shutil.copy2(HISTORY_FILE, backup_file)
-                        logger.info(f"Created backup of corrupted history file: {backup_file}")
                     except Exception as backup_error:
                         logger.error(f"Failed to create backup: {backup_error}")
         else:
-            logger.info("No resolution history file found, starting with empty history")
             self.resolution_history = []
     
     def handle_anomaly(self, anomaly):
         """Handle detected anomaly by creating an issue and attempting resolution"""
+        agent_id = anomaly.get('agent_id')
+        if not isinstance(agent_id, str) or not agent_id.strip():
+            logger.warning("Ignoring anomaly without an owning agent: %s", anomaly.get('type'))
+            return None
+
         # Generate a unique ID for this issue
         issue_id = str(uuid.uuid4())
         
@@ -198,8 +640,9 @@ class NetworkResolver:
         
         logger.info(f"Created new issue {issue_id} for anomaly type {anomaly['type']}")
         
-        # Try to auto-resolve
-        threading.Thread(target=self.auto_resolve, args=(issue_id,)).start()
+        # Agent issues remain pending until their owning agent is online.
+        issue['status'] = 'pending'
+        self._save_active_issues()
         
         return issue_id
     
@@ -238,9 +681,10 @@ class NetworkResolver:
             return f"Detected a routing loop across {hops} nodes. This can cause packet loss and latency."
         
         elif anomaly['type'] == 'bandwidth_saturation':
-            usage = anomaly['details'].get('usage', '?')
-            threshold = anomaly['details'].get('threshold', '?')
-            return f"Network bandwidth usage ({usage}%) exceeds normal threshold ({threshold}%). This may cause slowdowns."
+            details = anomaly['details']
+            interface = details.get('interface', 'network interface')
+            utilization = details.get('average_utilization_pct', '?')
+            return f"Interface {interface} sustained {utilization}% utilization with network impact across multiple samples."
         
         elif anomaly['type'] == 'connection_timeout':
             service = anomaly['details'].get('service', 'network service')
@@ -261,8 +705,12 @@ class NetworkResolver:
         return "Unknown network issue detected."
     
     def get_active_issues(self):
-        """Return list of active issues"""
-        return list(self.active_issues.values())
+        """Return only agent-owned issues eligible for the corrective workflow."""
+        return [
+            issue for issue in self.active_issues.values()
+            if isinstance(issue.get('anomaly', {}).get('agent_id'), str)
+            and issue['anomaly']['agent_id'].strip()
+        ]
     
     def auto_resolve(self, issue_id):
         """Attempt to automatically resolve an issue"""
@@ -272,20 +720,25 @@ class NetworkResolver:
         
         issue = self.active_issues[issue_id]
         logger.info(f"Starting resolution for issue {issue_id} with status {issue['status']}")
+
+        if not issue.get('anomaly', {}).get('agent_id'):
+            logger.warning("Refusing local auto-resolution of unowned issue %s", issue_id)
+            return {'success': False, 'message': 'Issue has no owning agent'}
         
-        if issue['status'] in ['resolved', 'resolving']:
+        if issue['status'] in ['resolved', 'resolving', 'awaiting_agent']:
             logger.info(f"Issue {issue_id} is already {issue['status']}")
             return {'success': True, 'message': f"Issue is already {issue['status']}"}
         
         # For demo - randomly decide if we should defer auto-resolution to keep issues visible
-        # This gives user time to see issues on the dashboard
-        if issue['status'] == 'new' and random.random() < 0.7 and not issue.get('manual_resolution'):  # 70% chance to defer immediate resolution
-            logger.info(f"Deferring immediate resolution of issue {issue_id} for demonstration")
-            issue['status'] = 'pending'
-            self._save_active_issues()  # This will trigger update callbacks
-            return {'success': True, 'message': "Resolution deferred for demonstration"}
+        # This gives user time to see issues on the dashboard removed for now 
         
         logger.info(f"Attempting to resolve issue {issue_id}")
+
+        # Agent-owned work must be dispatched to its owning agent.
+        logger.info(f"Issue {issue_id} is agent-managed; local execution is disabled.")
+        issue['status'] = 'pending'
+        self._save_active_issues()
+        return {'success': False, 'message': 'Issue must be resolved by its owning agent'}
         
         # Update issue status
         issue['status'] = 'resolving'
@@ -347,52 +800,28 @@ class NetworkResolver:
         time.sleep(resolution_strategy.get('verification_wait', 1))
         
         # For simulation/demo, adjust success rates
-        simulation_success_boost = 0.3  # Boost success rate by 30% for demo
+        #simulation_success_boost = 0.3  # Boost success rate by 30% for demo
         
         # Check if resolution was successful
+        # ✅ REPLACE WITH THIS DETERMINISTIC LOGIC
+
         if success:
-            # In a real implementation, we would verify the issue is actually resolved
-            # For this demo, we'll assume success for some strategies
-            strategy_success_rate = resolution_strategy.get('success_rate', 0.5) + simulation_success_boost
-            
-            # For manual resolutions, increase success rate significantly
-            if issue.get('manual_resolution'):
-                strategy_success_rate = min(1.0, strategy_success_rate + 0.3)  # Add 30% but cap at 100%
-                logger.info(f"Manual resolution in progress - using boosted success rate: {strategy_success_rate}")
-            
-            # For demonstration - occasionally leave issues pending for user interaction
-            if random.random() < 0.6 and not issue.get('manual_resolution'):  # 60% chance to mark as pending for automatic resolutions
-                issue['status'] = 'pending'
-                logger.info(f"Issue {issue_id} marked as pending for user demonstration - needs manual resolution")
-                self._save_active_issues()  # Trigger update callbacks
-            elif strategy_success_rate > random.random():
-                issue['status'] = 'resolved'
-                logger.info(f"Issue {issue_id} marked as resolved")
-                # Remove resolved issue immediately
-                self.active_issues.pop(issue_id)
-                self._save_active_issues()  # Trigger update callbacks
-                self._trigger_update_callbacks()  # Trigger update callbacks
-                logger.info(f"Issue {issue_id} removed from active issues")
-            else:
-                issue['status'] = 'pending'
-                logger.info(f"Issue {issue_id} marked as pending - needs verification")
-                self._save_active_issues()  # Trigger update callbacks
+    
+            issue['status'] = 'resolved'
+            logger.info(f"Issue {issue_id} marked as resolved")
+    
+    
+            self.active_issues.pop(issue_id)
+            self._save_active_issues()
+            self._trigger_update_callbacks()
+            logger.info(f"Issue {issue_id} removed from active issues")
         else:
-            # For demo, still give a chance of success even if commands failed
-            if random.random() < 0.2:  # Reduced from 0.3 to keep more issues visible
-                issue['status'] = 'resolved'
-                logger.info(f"Issue {issue_id} eventually resolved despite command failures")
-                # Remove resolved issue immediately
-                self.active_issues.pop(issue_id)
-                self._save_active_issues()  # Trigger update callbacks
-                self._trigger_update_callbacks()  # Trigger update callbacks
-                logger.info(f"Issue {issue_id} removed from active issues")
-            else:
-                issue['status'] = 'failed'
-                logger.warning(f"Issue {issue_id} resolution failed")
-                self._save_active_issues()  # Trigger update callbacks
-        
-        # Save changes
+    
+            issue['status'] = 'failed'
+            logger.warning(f"Issue {issue_id} resolution failed")
+    
+
+
         self._save_active_issues()
         
         # Create a copy of the issue for history before any modifications
@@ -452,7 +881,7 @@ class NetworkResolver:
         anomaly_type = issue['anomaly']['type']
         
         # Use SIMULATION_MODE to determine if we should use real commands or simulated ones
-        simulation_mode = True  # Always use simulation for demo
+        simulation_mode = False  # Always use simulation for demo
         
         if anomaly_type == 'high_latency':
             if simulation_mode:
@@ -707,31 +1136,38 @@ class NetworkResolver:
         return detector.get_model_accuracy()
     
     def _check_pending_issues(self):
-        """Background thread to check and retry pending issues"""
+        """Retry timed-out commands and close verification windows without evidence."""
         while True:
             try:
                 current_time = datetime.now()
                 for issue_id, issue in list(self.active_issues.items()):
-                    if issue['status'] == 'pending':
-                        # Check if issue has been pending for more than 30 seconds
-                        detected_time = datetime.fromisoformat(issue['detected_at'])
-                        if (current_time - detected_time).total_seconds() > 30:  # Changed from 60 (1 minute) to 30 seconds
-                            logger.info(f"Retrying resolution for pending issue {issue_id} after 30 seconds")
-                            result = self.auto_resolve(issue_id)
-                            logger.info(f"Resolution result: {result}")
-                
-                # Log count of active and resolved issues
-                logger.info(f"Active issues: {len(self.active_issues)}, Resolved issues: {len(self.resolution_history)}")
+                    if not issue.get('anomaly', {}).get('agent_id'):
+                        continue
+                    if issue.get('status') == 'awaiting_agent':
+                        sent_at = issue.get('last_command_sent')
+                        if sent_at and (current_time - datetime.fromisoformat(sent_at)).total_seconds() > 900:
+                            logger.warning("Agent command timed out for issue %s; scheduling retry", issue_id)
+                            issue['status'] = 'pending'
+                            issue.pop('command_id', None)
+                            self._save_active_issues()
+                    elif issue.get('status') == 'awaiting_verification':
+                        completed_at = issue.get('verification', {}).get('execution_completed_at')
+                        if completed_at and (current_time - datetime.fromisoformat(completed_at)).total_seconds() > VERIFICATION_WINDOW_SECONDS:
+                            logger.warning("Metric verification timed out for issue %s", issue_id)
+                            self.mark_verification_timed_out(issue_id)
+
+                # Lazy import avoids an import cycle. The dispatcher checks
+                # that the owning agent is online before it sends anything.
+                from app.agents.handlers import dispatch_pending_issues_for_agent
+                dispatch_pending_issues_for_agent()
                 
                 # Emit status updates
                 self._trigger_update_callbacks()
-                self._trigger_resolution_callbacks()
                 
             except Exception as e:
                 logger.error(f"Error checking pending issues: {e}")
             
-            # Check every 30 seconds instead of every minute
-            time.sleep(30)
+            time.sleep(15)
     
     def get_network_status(self):
         """Get the current network status"""
@@ -764,12 +1200,12 @@ if __name__ == "__main__":
     }
     
     issue_id = resolver.handle_anomaly(anomaly)
-    print(f"Created issue {issue_id}")
+    logger.info(f"Created issue {issue_id}")
     
     # Get active issues
     issues = resolver.get_active_issues()
-    print(f"Active issues: {len(issues)}")
+    logger.info(f"Loaded active issues for diagnostic run: {len(issues)}")
     
     # Resolve an issue
     result = resolver.resolve_issue(issue_id)
-    print(f"Resolution result: {result}") 
+    logger.info(f"Resolution result: {result}")

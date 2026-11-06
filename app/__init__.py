@@ -8,16 +8,18 @@ socketio = SocketIO(cors_allowed_origins="*", ping_timeout=60, ping_interval=25,
 
 def create_app():
     """Application factory function"""
-    app = Flask(__name__)
+    flask_app = Flask(__name__)
     
     # Ensure data directory exists
     os.makedirs('data', exist_ok=True)
     
     # Register blueprints
     from app.routes import main_bp
-    app.register_blueprint(main_bp)
+    flask_app.register_blueprint(main_bp)
     
     # Initialize SocketIO with the app
-    socketio.init_app(app)
+    socketio.init_app(flask_app)
+
+    import app.agents.handlers
     
-    return app 
+    return flask_app 

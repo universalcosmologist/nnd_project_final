@@ -1,1 +1,17 @@
-pip install flask scikit-learn numpy pandas matplotlib joblib requests scapy pyshark networkx schedule flask_socketio
+flask
+scikit-learn
+numpy
+pandas
+matplotlib
+joblib
+requests
+scapy
+pyshark
+networkx
+schedule
+flask_socketio
+psutil 
+websocket-client
+gunicorn
+simple-websocket
+eventlet

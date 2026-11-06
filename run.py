@@ -1,6 +1,7 @@
 from app import create_app, socketio
 import threading
 from app.network.monitor import NetworkMonitor
+import os
 
 if __name__ == "__main__":
     app = create_app()
@@ -15,4 +16,5 @@ if __name__ == "__main__":
     print("Starting web server with Socket.IO. Access the dashboard at http://localhost:5000")
     
     # Start Flask application with Socket.IO
-    socketio.run(app, debug=True, host='0.0.0.0', allow_unsafe_werkzeug=True) 
+    debug = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
+    socketio.run(app, debug=debug, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)

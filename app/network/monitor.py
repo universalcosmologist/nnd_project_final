@@ -32,8 +32,9 @@ if not logger.handlers:
     logger.addHandler(console_handler)
 
 # Configuration for network monitoring
-# Default to simulation mode, can be overridden by environment variable
-SIMULATION_MODE = os.environ.get('SIMULATION_MODE', 'true').lower() == 'true'
+# Default to simulation mode, can be overridden by environment variable we changing it now 
+SIMULATION_MODE = os.environ.get('SIMULATION_MODE', 'false').lower() == 'true'
+NETWORK_TEST_HOST = os.environ.get('NETWORK_TEST_HOST', '8.8.8.8')
 logger.info(f"Network monitoring mode: {'SIMULATION' if SIMULATION_MODE else 'REAL'}")
 
 # Global network status
@@ -150,60 +151,59 @@ def measure_packet_loss(host, count=4):
         logger.error(f"Error measuring packet loss: {e}")
         return 100  # Default high packet loss on error
 
-def measure_bandwidth():
-    """Measure network bandwidth in container environment"""
+def measure_ping_stats(host, count=4):
+    """Measure ICMP latency and packet loss using the platform ping command."""
     if SIMULATION_MODE:
-        # Simulate bandwidth usage
-        return random.uniform(5, 50)  # Mbps
+        return random.uniform(10, 100), random.uniform(0, 10)
+
+    try:
+        command = ['ping', '-n' if platform.system() == 'Windows' else '-c', str(count), host]
+        result = subprocess.run(command, capture_output=True, text=True, timeout=15)
+        output = f"{result.stdout}\n{result.stderr}"
+
+        import re
+        loss_match = re.search(r'(\d+(?:\.\d+)?)%\s*(?:loss|packet loss)', output, re.IGNORECASE)
+        average_match = re.search(r'(?:Average|avg)[^=]*=\s*(\d+(?:\.\d+)?)\s*ms', output, re.IGNORECASE)
+        if not average_match:
+            average_match = re.search(
+                r'=\s*\d+(?:\.\d+)?/(\d+(?:\.\d+)?)/', output, re.IGNORECASE
+            )
+        if not average_match:
+            average_match = re.search(r'=\s*(\d+(?:\.\d+)?)\s*ms', output, re.IGNORECASE)
+
+        packet_loss = float(loss_match.group(1)) if loss_match else 100.0
+        latency = float(average_match.group(1)) if average_match else 1000.0
+        return latency, packet_loss
+    except (OSError, subprocess.SubprocessError) as exc:
+        logger.warning("Unable to measure ICMP stats for %s: %s", host, exc)
+        return 1000.0, 100.0
+
+def measure_bandwidth():
+    """Measure network bandwidth"""
+    if SIMULATION_MODE:
+        return random.uniform(5, 50)
     
     try:
-        # Read network stats from /proc filesystem
-        with open('/proc/net/dev', 'r') as f:
-            lines = f.readlines()
+        import psutil
         
-        # Find the main interface (usually eth0 in containers)
-        interface_data = None
-        for line in lines[2:]:  # Skip header lines
-            parts = line.strip().split()
-            if len(parts) >= 17:
-                interface = parts[0].strip(':')
-                if interface == 'eth0' or interface == 'ens5':
-                    interface_data = {
-                        'bytes_recv': int(parts[1]),
-                        'bytes_sent': int(parts[9])
-                    }
-                    break
-        
-        if not interface_data:
-            return 0
-            
-        # Wait for a short period
+        # Get initial counters
+        net1 = psutil.net_io_counters()
         time.sleep(1)
+        net2 = psutil.net_io_counters()
         
-        # Read updated stats
-        with open('/proc/net/dev', 'r') as f:
-            lines = f.readlines()
+        # Calculate bytes per second
+        bytes_sent = net2.bytes_sent - net1.bytes_sent
+        bytes_recv = net2.bytes_recv - net1.bytes_recv
+        total_bytes = bytes_sent + bytes_recv
         
-        # Find the interface again
-        for line in lines[2:]:
-            parts = line.strip().split()
-            if len(parts) >= 17:
-                interface = parts[0].strip(':')
-                if interface == 'eth0' or interface == 'ens5':
-                    # Calculate bytes per second
-                    bytes_recv = int(parts[1]) - interface_data['bytes_recv']
-                    bytes_sent = int(parts[9]) - interface_data['bytes_sent']
-                    
-                    # Convert to Mbps (megabits per second)
-                    total_bytes = bytes_recv + bytes_sent
-                    mbps = (total_bytes * 8) / 1000000
-                    
-                    return mbps
+        # Convert to Mbps
+        mbps = (total_bytes * 8) / 1000000
+        return mbps
         
-        return 0
     except Exception as e:
         logger.error(f"Error measuring bandwidth: {e}")
-        return 0  # Default to zero on error
+        # Fallback: simulate
+        return random.uniform(5, 50)
 
 def scan_local_network():
     """Scan local network for devices"""
@@ -351,28 +351,14 @@ def collect_metrics_simulated():
     
     # Check for anomalies
     try:
-        from app.models.anomaly_detector import AnomalyDetector
-        detector = AnomalyDetector()
+        from app.services import anomaly_detector as detector
         anomalies = detector.detect_anomalies(network_status)
         
         if anomalies:
-            logger.warning(f"Anomalies detected: {anomalies}")
-            # Trigger self-healing
-            from app.healing.resolver import NetworkResolver
-            resolver = NetworkResolver()
-            for anomaly in anomalies:
-                resolver.handle_anomaly(anomaly)
-            
-            # Explicitly emit active issues after handling anomalies
-            try:
-                # Use lazy import to avoid circular dependencies
-                import importlib
-                routes_module = importlib.import_module('app.routes')
-                print("Explicitly emitting active issues after anomaly detection")
-                routes_module.emit_active_issues()
-                routes_module.emit_logs()
-            except Exception as e:
-                logger.error(f"Error explicitly emitting active issues: {e}")
+            logger.warning(
+                "Server-only simulation anomalies are diagnostic; no corrective issue created: %s",
+                anomalies,
+            )
                 
     except Exception as e:
         logger.error(f"Error in anomaly detection: {e}")
@@ -383,24 +369,8 @@ def collect_metrics_real():
     """Collect real network metrics"""
     global network_status
 
-    # Check connectivity to common hosts
-    hosts_to_check = ['google.com', 'github.com', 'microsoft.com']
-    
-    # Find a host that responds
-    responding_host = None
-    for host in hosts_to_check:
-        if ping_host(host):
-            responding_host = host
-            break
-    
-    if not responding_host:
-        logger.warning("No hosts responding, using fallback values")
-        latency = 1000
-        packet_loss = 100
-    else:
-        # Measure latency and packet loss to the responding host
-        latency = measure_latency(responding_host)
-        packet_loss = measure_packet_loss(responding_host)
+    # Match the agent's measurement contract: ICMP to one shared target.
+    latency, packet_loss = measure_ping_stats(NETWORK_TEST_HOST)
     
     # Measure bandwidth
     bandwidth_usage = measure_bandwidth()
@@ -450,33 +420,7 @@ def collect_metrics_real():
         pass
     
     # Check for anomalies
-    try:
-        from app.models.anomaly_detector import AnomalyDetector
-        detector = AnomalyDetector()
-        anomalies = detector.detect_anomalies(network_status)
-        
-        if anomalies:
-            logger.warning(f"Anomalies detected: {anomalies}")
-            # Trigger self-healing
-            from app.healing.resolver import NetworkResolver
-            resolver = NetworkResolver()
-            for anomaly in anomalies:
-                resolver.handle_anomaly(anomaly)
-            
-            # Explicitly emit active issues after handling anomalies
-            try:
-                # Use lazy import to avoid circular dependencies
-                import importlib
-                routes_module = importlib.import_module('app.routes')
-                print("Explicitly emitting active issues after anomaly detection")
-                routes_module.emit_active_issues()
-                routes_module.emit_logs()
-            except Exception as e:
-                logger.error(f"Error explicitly emitting active issues: {e}")
-                
-    except Exception as e:
-        logger.error(f"Error in anomaly detection: {e}")
-    
+    # we are not gonna give model the server side observations
     return network_status
 
 class NetworkMonitor:

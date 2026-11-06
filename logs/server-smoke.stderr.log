@@ -1,0 +1,809 @@
+2026-07-27 19:33:25,734 - network_monitor - INFO - Network monitoring mode: REAL
+2026-07-27 19:33:29,357 - anomaly_detector - INFO - Loading existing anomaly detection model from data\models\anomaly_model.pkl
+2026-07-27 19:33:29,357 - anomaly_detector - INFO - Loading existing anomaly detection model from data\models\anomaly_model.pkl
+2026-07-27 19:33:29,474 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:33:29,487 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:33:29,489 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:33:29,491 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:33:29,492 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:33:29,494 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:33:29,495 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:33:29,499 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:33:29,503 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:33:29,567 - network_monitor - INFO - Network monitoring started with 5s interval
+2026-07-27 19:33:29,567 - network_monitor - INFO - Network monitoring started with 5s interval
+2026-07-27 19:33:29,569 - network_monitor - INFO - Mode: REAL
+2026-07-27 19:33:29,569 - network_monitor - INFO - Mode: REAL
+2026-07-27 19:33:29,606 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.34:5000
+2026-07-27 19:33:29,607 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-07-27 19:33:36,563 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:33:36] "GET /healthz HTTP/1.1" 200 -
+2026-07-27 19:33:36,736 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:33:36] "GET /api/healing/issues HTTP/1.1" 200 -
+2026-07-27 19:33:44,505 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:33:44,507 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:33:44,508 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:33:44,509 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:33:44,510 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:33:44,511 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:33:44,516 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:33:44,521 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:33:45,255 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:33:45,255 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:33:45,258 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=441.53ms, Packet Loss=0.0%
+2026-07-27 19:33:45,258 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=441.53ms, Packet Loss=0.0%
+2026-07-27 19:33:59,523 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:33:59,524 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:33:59,525 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:33:59,525 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:33:59,526 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:33:59,526 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:33:59,530 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:33:59,534 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:34:03,495 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:34:03] "GET /socket.io/?transport=polling&EIO=4&t=1785161041.4627883 HTTP/1.1" 200 -
+2026-07-27 19:34:05,031 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:34:05,031 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:34:05,033 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=256.66ms, Packet Loss=0.0%
+2026-07-27 19:34:05,033 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=256.66ms, Packet Loss=0.0%
+2026-07-27 19:34:05,540 - agent_handlers - INFO - Agent connected: Pu-IhwZnV12I-cL6AAAB
+2026-07-27 19:34:05,547 - agent_handlers - INFO - Received agent_register event from Pu-IhwZnV12I-cL6AAAB
+2026-07-27 19:34:05,549 - agent_handlers - INFO - Registration data: agent_id=test-agent-001, hostname=TEST-HOST
+2026-07-27 19:34:05,550 - agent_manager - INFO - Agent registered: test-agent-001 (TEST-HOST)
+2026-07-27 19:34:05,550 - agent_handlers - INFO - Agent registration result: True
+2026-07-27 19:34:05,551 - agent_handlers - INFO - Successfully registered agent test-agent-001
+2026-07-27 19:34:05,552 - agent_handlers - INFO - Broadcasting agents_update with 1 agents
+2026-07-27 19:34:10,550 - agent_manager - INFO - Agent removed: test-agent-001
+2026-07-27 19:34:10,553 - agent_handlers - INFO - Agent disconnected: Pu-IhwZnV12I-cL6AAAB
+2026-07-27 19:34:10,558 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:34:10] "GET /socket.io/?transport=websocket&EIO=4&sid=vgOKAZjPwaPO8BgGAAAA&t=1785161043.498866 HTTP/1.1" 200 -
+2026-07-27 19:34:14,536 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:34:14,537 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:34:14,537 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:34:14,538 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:34:14,538 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:34:14,539 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:34:14,543 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:34:14,546 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:34:24,714 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:34:24,714 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:34:24,718 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=260.36ms, Packet Loss=0.0%
+2026-07-27 19:34:24,718 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=260.36ms, Packet Loss=0.0%
+2026-07-27 19:34:29,548 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:34:29,551 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:34:29,552 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:34:29,553 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:34:29,554 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:34:29,555 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:34:29,560 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:34:29,563 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:34:44,565 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:34:44,568 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:34:44,568 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:34:44,569 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:34:44,569 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:34:44,570 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:34:44,573 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:34:44,577 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:34:44,639 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:34:44,639 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:34:44,642 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=286.8ms, Packet Loss=0.0%
+2026-07-27 19:34:44,642 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=286.8ms, Packet Loss=0.0%
+2026-07-27 19:34:59,578 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:34:59,579 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:34:59,580 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:34:59,581 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:34:59,583 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:34:59,584 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:34:59,587 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:34:59,591 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:35:04,304 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:35:04,304 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:35:04,305 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=273.01ms, Packet Loss=0.0%
+2026-07-27 19:35:04,305 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=273.01ms, Packet Loss=0.0%
+2026-07-27 19:35:14,593 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:35:14,594 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:35:14,596 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:35:14,597 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:35:14,599 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:35:14,601 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:35:14,606 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:35:14,611 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:35:24,106 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:35:24,106 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:35:24,118 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=282.51ms, Packet Loss=0.0%
+2026-07-27 19:35:24,118 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=282.51ms, Packet Loss=0.0%
+2026-07-27 19:35:29,613 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:35:29,615 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:35:29,616 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:35:29,617 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:35:29,618 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:35:29,619 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:35:29,624 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:35:29,628 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:35:37,015 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:35:37] "GET / HTTP/1.1" 200 -
+2026-07-27 19:35:44,241 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:35:44,241 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:35:44,243 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=314.62ms, Packet Loss=0.0%
+2026-07-27 19:35:44,243 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=314.62ms, Packet Loss=0.0%
+2026-07-27 19:35:44,629 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:35:44,630 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:35:44,631 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:35:44,631 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:35:44,631 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:35:44,632 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:35:44,636 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:35:44,640 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:35:59,643 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:35:59,645 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:35:59,646 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:35:59,647 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:35:59,647 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:35:59,648 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:35:59,652 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:35:59,655 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:36:04,148 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:36:04,148 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:36:04,152 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=298.64ms, Packet Loss=0.0%
+2026-07-27 19:36:04,152 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=298.64ms, Packet Loss=0.0%
+2026-07-27 19:36:14,656 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:36:14,659 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:36:14,660 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:36:14,661 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:36:14,662 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:36:14,662 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:36:14,665 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:36:14,669 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:36:19,639 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:36:19] "GET /api/healing/issues HTTP/1.1" 200 -
+2026-07-27 19:36:19,950 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:36:19,954 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:36:19] "GET /api/healing/resolved HTTP/1.1" 200 -
+2026-07-27 19:36:19,958 - root - INFO - Client connected. Total clients: 1
+2026-07-27 19:36:19,990 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:36:19] "GET /api/logs HTTP/1.1" 200 -
+2026-07-27 19:36:20,075 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:36:20] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-07-27 19:36:20,295 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:36:20,296 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:36:20] "GET /api/healing/issues HTTP/1.1" 200 -
+2026-07-27 19:36:20,297 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:36:20] "GET /api/network_status HTTP/1.1" 200 -
+2026-07-27 19:36:20,300 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:36:20] "GET /api/healing/resolved HTTP/1.1" 200 -
+2026-07-27 19:36:20,334 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:36:20] "GET /api/logs HTTP/1.1" 200 -
+2026-07-27 19:36:23,788 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:36:23,788 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:36:23,790 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=267.16ms, Packet Loss=0.0%
+2026-07-27 19:36:23,790 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=267.16ms, Packet Loss=0.0%
+2026-07-27 19:36:29,671 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:36:29,672 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:36:29,672 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:36:29,676 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:36:29,677 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:36:29,678 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:36:29,683 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:36:29,693 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:36:43,727 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:36:43,727 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:36:43,731 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=312.05ms, Packet Loss=0.0%
+2026-07-27 19:36:43,731 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=312.05ms, Packet Loss=0.0%
+2026-07-27 19:36:44,695 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:36:44,696 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:36:44,697 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:36:44,699 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:36:44,701 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:36:44,702 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:36:44,706 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:36:44,714 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:36:48,724 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:36:48] "[31m[1mPOST /api/healing/resolve HTTP/1.1[0m" 400 -
+2026-07-27 19:36:57,363 - werkzeug - INFO - 127.0.0.1 - - [27/Jul/2026 19:36:57] "GET /api/healing/issues HTTP/1.1" 200 -
+2026-07-27 19:36:59,716 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:36:59,718 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:36:59,719 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:36:59,723 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:36:59,724 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:36:59,726 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:36:59,731 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:36:59,740 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:37:03,342 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:37:03,342 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:37:03,343 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=249.39ms, Packet Loss=0.0%
+2026-07-27 19:37:03,343 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=249.39ms, Packet Loss=0.0%
+2026-07-27 19:37:14,742 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:37:14,745 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:37:14,745 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:37:14,748 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:37:14,749 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:37:14,751 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:37:14,756 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:37:14,766 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:37:16,537 - root - INFO - Client disconnected. Total clients: 0
+2026-07-27 19:37:23,429 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:37:23,429 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:37:23,430 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=341.16ms, Packet Loss=0.0%
+2026-07-27 19:37:23,430 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=341.16ms, Packet Loss=0.0%
+2026-07-27 19:37:29,768 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:37:29,770 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:37:29,771 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:37:29,771 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:37:29,772 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:37:29,772 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:37:29,775 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:37:29,778 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:37:44,123 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:37:44,123 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:37:44,124 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=421.19ms, Packet Loss=0.0%
+2026-07-27 19:37:44,124 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=421.19ms, Packet Loss=0.0%
+2026-07-27 19:37:44,779 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:37:44,780 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:37:44,781 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:37:44,781 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:37:44,782 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:37:44,782 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:37:44,785 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:37:44,789 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:37:59,790 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:37:59,793 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:37:59,794 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:37:59,794 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:37:59,794 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:37:59,795 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:37:59,797 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:37:59,800 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:38:04,737 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:38:04,737 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:38:04,738 - network_monitor - INFO - Network status updated (REAL): Health=critical, Latency=524.39ms, Packet Loss=0.0%
+2026-07-27 19:38:04,738 - network_monitor - INFO - Network status updated (REAL): Health=critical, Latency=524.39ms, Packet Loss=0.0%
+2026-07-27 19:38:14,802 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:38:14,804 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:38:14,805 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:38:14,807 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:38:14,808 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:38:14,809 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:38:14,814 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:38:14,819 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:38:24,401 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:38:24,401 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:38:24,405 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=260.0ms, Packet Loss=0.0%
+2026-07-27 19:38:24,405 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=260.0ms, Packet Loss=0.0%
+2026-07-27 19:38:29,821 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:38:29,822 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:38:29,823 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:38:29,823 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:38:29,824 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:38:29,824 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:38:29,827 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:38:29,830 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:38:44,831 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:38:44,832 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:38:44,833 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:38:44,834 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:38:44,835 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:38:44,837 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:38:44,842 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:38:44,849 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:38:48,053 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:38:48,053 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:38:48,054 - network_monitor - INFO - Network status updated (REAL): Health=critical, Latency=728.14ms, Packet Loss=0.0%
+2026-07-27 19:38:48,054 - network_monitor - INFO - Network status updated (REAL): Health=critical, Latency=728.14ms, Packet Loss=0.0%
+2026-07-27 19:38:59,852 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:38:59,853 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:38:59,853 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:38:59,854 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:38:59,854 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:38:59,854 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:38:59,857 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:38:59,861 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:39:08,036 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:39:08,036 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:39:08,037 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=283.19ms, Packet Loss=0.0%
+2026-07-27 19:39:08,037 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=283.19ms, Packet Loss=0.0%
+2026-07-27 19:39:14,862 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:39:14,863 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:39:14,864 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:39:14,864 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:39:14,864 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:39:14,864 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:39:14,867 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:39:14,870 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:39:27,813 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:39:27,813 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:39:27,816 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=281.36ms, Packet Loss=0.0%
+2026-07-27 19:39:27,816 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=281.36ms, Packet Loss=0.0%
+2026-07-27 19:39:29,871 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:39:29,877 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:39:29,878 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:39:29,878 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:39:29,878 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:39:29,879 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:39:29,881 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:39:29,884 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:39:44,886 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:39:44,889 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:39:44,890 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:39:44,890 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:39:44,891 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:39:44,891 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:39:44,894 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:39:44,897 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:39:47,647 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:39:47,647 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:39:47,651 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=271.46ms, Packet Loss=0.0%
+2026-07-27 19:39:47,651 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=271.46ms, Packet Loss=0.0%
+2026-07-27 19:39:59,898 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:39:59,900 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:39:59,901 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:39:59,901 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:39:59,902 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:39:59,904 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:39:59,907 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:39:59,911 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:40:07,754 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:40:07,754 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:40:07,755 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=319.76ms, Packet Loss=0.0%
+2026-07-27 19:40:07,755 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=319.76ms, Packet Loss=0.0%
+2026-07-27 19:40:14,912 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:40:14,915 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:40:14,916 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:40:14,916 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:40:14,916 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:40:14,917 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:40:14,919 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:40:14,922 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:40:27,395 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:40:27,395 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:40:27,399 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=266.33ms, Packet Loss=0.0%
+2026-07-27 19:40:27,399 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=266.33ms, Packet Loss=0.0%
+2026-07-27 19:40:29,924 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:40:29,927 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:40:29,927 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:40:29,928 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:40:29,928 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:40:29,929 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:40:29,931 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:40:29,934 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:40:44,936 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:40:44,937 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:40:44,938 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:40:44,938 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:40:44,938 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:40:44,939 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:40:44,941 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:40:44,944 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:40:47,007 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:40:47,007 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:40:47,008 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=241.6ms, Packet Loss=0.0%
+2026-07-27 19:40:47,008 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=241.6ms, Packet Loss=0.0%
+2026-07-27 19:40:59,946 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:40:59,948 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:40:59,948 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:40:59,948 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:40:59,949 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:40:59,949 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:40:59,952 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:40:59,955 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:41:06,844 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:41:06,844 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:41:06,848 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=262.6ms, Packet Loss=0.0%
+2026-07-27 19:41:06,848 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=262.6ms, Packet Loss=0.0%
+2026-07-27 19:41:14,957 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:41:14,960 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:41:14,960 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:41:14,961 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:41:14,961 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:41:14,962 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:41:14,964 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:41:14,967 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:41:26,989 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:41:26,989 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:41:26,993 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=384.03ms, Packet Loss=0.0%
+2026-07-27 19:41:26,993 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=384.03ms, Packet Loss=0.0%
+2026-07-27 19:41:29,969 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:41:29,972 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:41:29,973 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:41:29,973 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:41:29,974 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:41:29,974 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:41:29,977 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:41:29,980 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:41:44,981 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:41:44,982 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:41:44,983 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:41:44,983 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:41:44,983 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:41:44,984 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:41:44,988 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:41:44,991 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:41:47,017 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:41:47,017 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:41:47,021 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=299.46ms, Packet Loss=0.0%
+2026-07-27 19:41:47,021 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=299.46ms, Packet Loss=0.0%
+2026-07-27 19:41:59,993 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:41:59,996 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:41:59,996 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:41:59,997 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:41:59,997 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:41:59,997 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:42:00,000 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:42:00,002 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:42:06,759 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:42:06,759 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:42:06,761 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=261.48ms, Packet Loss=0.0%
+2026-07-27 19:42:06,761 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=261.48ms, Packet Loss=0.0%
+2026-07-27 19:42:15,004 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:42:15,007 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:42:15,008 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:42:15,008 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:42:15,008 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:42:15,009 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:42:15,011 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:42:15,014 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:42:26,541 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:42:26,541 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:42:26,542 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=303.02ms, Packet Loss=0.0%
+2026-07-27 19:42:26,542 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=303.02ms, Packet Loss=0.0%
+2026-07-27 19:42:30,015 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:42:30,017 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:42:30,018 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:42:30,018 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:42:30,018 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:42:30,019 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:42:30,022 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:42:30,025 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:42:45,027 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:42:45,028 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:42:45,029 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:42:45,029 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:42:45,030 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:42:45,030 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:42:45,033 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:42:45,036 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:42:46,105 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:42:46,105 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:42:46,106 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=263.58ms, Packet Loss=0.0%
+2026-07-27 19:42:46,106 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=263.58ms, Packet Loss=0.0%
+2026-07-27 19:43:00,037 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:43:00,038 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:43:00,038 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:43:00,039 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:43:00,039 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:43:00,040 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:43:00,043 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:43:00,046 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:43:05,950 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:43:05,950 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:43:05,953 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=289.42ms, Packet Loss=0.0%
+2026-07-27 19:43:05,953 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=289.42ms, Packet Loss=0.0%
+2026-07-27 19:43:15,048 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:43:15,051 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:43:15,052 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:43:15,052 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:43:15,052 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:43:15,053 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:43:15,055 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:43:15,058 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:43:25,732 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:43:25,732 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:43:25,733 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=274.53ms, Packet Loss=0.0%
+2026-07-27 19:43:25,733 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=274.53ms, Packet Loss=0.0%
+2026-07-27 19:43:30,060 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:43:30,063 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:43:30,063 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:43:30,064 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:43:30,064 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:43:30,065 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:43:30,067 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:43:30,070 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:43:45,072 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:43:45,075 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:43:45,075 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:43:45,075 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:43:45,076 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:43:45,076 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:43:45,079 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:43:45,081 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:43:45,447 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:43:45,447 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:43:45,451 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=268.07ms, Packet Loss=0.0%
+2026-07-27 19:43:45,451 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=268.07ms, Packet Loss=0.0%
+2026-07-27 19:44:00,083 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:44:00,084 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:44:00,084 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:44:00,084 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:44:00,085 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:44:00,085 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:44:00,087 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:44:00,092 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:44:05,168 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:44:05,168 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:44:05,171 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=282.57ms, Packet Loss=0.0%
+2026-07-27 19:44:05,171 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=282.57ms, Packet Loss=0.0%
+2026-07-27 19:44:15,093 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:44:15,097 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:44:15,097 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:44:15,098 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:44:15,098 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:44:15,098 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:44:15,101 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:44:15,104 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:44:24,909 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:44:24,909 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:44:24,910 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=288.92ms, Packet Loss=0.0%
+2026-07-27 19:44:24,910 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=288.92ms, Packet Loss=0.0%
+2026-07-27 19:44:30,105 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:44:30,106 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:44:30,107 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:44:30,107 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:44:30,108 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:44:30,108 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:44:30,111 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:44:30,114 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:44:44,675 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:44:44,675 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:44:44,678 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=284.16ms, Packet Loss=0.0%
+2026-07-27 19:44:44,678 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=284.16ms, Packet Loss=0.0%
+2026-07-27 19:44:45,116 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:44:45,119 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:44:45,119 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:44:45,120 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:44:45,120 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:44:45,120 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:44:45,123 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:44:45,126 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:45:00,127 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:45:00,129 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:45:00,129 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:45:00,130 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:45:00,130 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:45:00,130 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:45:00,133 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:45:00,136 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:45:04,653 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:45:04,653 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:45:04,654 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=284.65ms, Packet Loss=0.0%
+2026-07-27 19:45:04,654 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=284.65ms, Packet Loss=0.0%
+2026-07-27 19:45:15,138 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:45:15,140 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:45:15,141 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:45:15,141 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:45:15,142 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:45:15,142 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:45:15,145 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:45:15,147 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:45:24,335 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:45:24,335 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:45:24,339 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=263.23ms, Packet Loss=0.0%
+2026-07-27 19:45:24,339 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=263.23ms, Packet Loss=0.0%
+2026-07-27 19:45:30,149 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:45:30,152 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:45:30,152 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:45:30,153 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:45:30,153 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:45:30,153 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:45:30,156 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:45:30,159 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:45:44,083 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:45:44,083 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:45:44,086 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=293.41ms, Packet Loss=0.0%
+2026-07-27 19:45:44,086 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=293.41ms, Packet Loss=0.0%
+2026-07-27 19:45:45,160 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:45:45,161 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:45:45,161 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:45:45,161 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:45:45,162 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:45:45,162 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:45:45,164 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:45:45,168 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:46:00,169 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:46:00,171 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:46:00,172 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:46:00,172 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:46:00,172 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:46:00,172 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:46:00,175 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:46:00,178 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:46:03,964 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:46:03,964 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:46:03,965 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=310.78ms, Packet Loss=0.0%
+2026-07-27 19:46:03,965 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=310.78ms, Packet Loss=0.0%
+2026-07-27 19:46:15,179 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:46:15,180 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:46:15,180 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:46:15,181 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:46:15,181 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:46:15,182 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:46:15,185 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:46:15,188 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:46:24,054 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:46:24,054 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:46:24,057 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=331.03ms, Packet Loss=0.0%
+2026-07-27 19:46:24,057 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=331.03ms, Packet Loss=0.0%
+2026-07-27 19:46:30,189 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:46:30,192 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:46:30,192 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:46:30,193 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:46:30,193 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:46:30,194 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:46:30,196 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:46:30,199 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:46:43,977 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:46:43,977 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:46:43,980 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=306.35ms, Packet Loss=0.0%
+2026-07-27 19:46:43,980 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=306.35ms, Packet Loss=0.0%
+2026-07-27 19:46:45,200 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:46:45,202 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:46:45,203 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:46:45,203 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:46:45,203 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:46:45,203 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:46:45,206 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:46:45,209 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:47:00,210 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:47:00,211 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:47:00,212 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:47:00,212 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:47:00,212 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:47:00,213 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:47:00,216 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:47:00,220 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:47:04,113 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:47:04,113 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:47:04,116 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=378.8ms, Packet Loss=0.0%
+2026-07-27 19:47:04,116 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=378.8ms, Packet Loss=0.0%
+2026-07-27 19:47:15,221 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:47:15,225 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:47:15,225 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:47:15,226 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:47:15,226 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:47:15,226 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:47:15,229 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:47:15,231 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:47:23,960 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:47:23,960 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:47:23,963 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=244.28ms, Packet Loss=0.0%
+2026-07-27 19:47:23,963 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=244.28ms, Packet Loss=0.0%
+2026-07-27 19:47:30,233 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:47:30,236 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:47:30,236 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:47:30,236 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:47:30,237 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:47:30,237 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:47:30,240 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:47:30,244 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:47:43,912 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:47:43,912 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:47:43,914 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=251.41ms, Packet Loss=0.0%
+2026-07-27 19:47:43,914 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=251.41ms, Packet Loss=0.0%
+2026-07-27 19:47:45,246 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:47:45,249 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:47:45,249 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:47:45,251 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:47:45,251 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:47:45,252 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:47:45,256 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:47:45,260 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:48:00,261 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:48:00,262 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:48:00,262 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:48:00,262 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:48:00,263 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:48:00,263 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:48:00,265 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:48:00,269 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:48:04,054 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:48:04,054 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:48:04,057 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=400.48ms, Packet Loss=0.0%
+2026-07-27 19:48:04,057 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=400.48ms, Packet Loss=0.0%
+2026-07-27 19:48:15,270 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:48:15,272 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:48:15,273 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:48:15,273 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:48:15,274 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:48:15,274 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:48:15,277 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:48:15,279 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:48:23,797 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:48:23,797 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:48:23,798 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=304.18ms, Packet Loss=0.0%
+2026-07-27 19:48:23,798 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=304.18ms, Packet Loss=0.0%
+2026-07-27 19:48:30,281 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:48:30,283 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:48:30,284 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:48:30,285 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:48:30,285 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:48:30,285 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:48:30,288 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:48:30,291 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:48:43,385 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:48:43,385 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:48:43,387 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=246.83ms, Packet Loss=0.0%
+2026-07-27 19:48:43,387 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=246.83ms, Packet Loss=0.0%
+2026-07-27 19:48:45,293 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:48:45,296 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:48:45,296 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:48:45,297 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:48:45,297 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:48:45,298 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:48:45,300 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:48:45,303 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:49:00,305 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:49:00,308 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:49:00,308 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:49:00,309 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:49:00,309 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:49:00,310 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:49:00,313 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:49:00,316 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:49:03,003 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:49:03,003 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:49:03,005 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=257.82ms, Packet Loss=0.0%
+2026-07-27 19:49:03,005 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=257.82ms, Packet Loss=0.0%
+2026-07-27 19:49:15,318 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:49:15,319 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:49:15,319 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:49:15,320 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:49:15,320 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:49:15,320 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:49:15,324 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:49:15,327 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:49:22,558 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:49:22,558 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:49:22,559 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=245.83ms, Packet Loss=0.0%
+2026-07-27 19:49:22,559 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=245.83ms, Packet Loss=0.0%
+2026-07-27 19:49:30,328 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:49:30,331 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:49:30,332 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:49:30,332 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:49:30,332 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:49:30,333 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:49:30,335 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:49:30,338 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:49:42,284 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:49:42,284 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:49:42,286 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=259.02ms, Packet Loss=0.0%
+2026-07-27 19:49:42,286 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=259.02ms, Packet Loss=0.0%
+2026-07-27 19:49:45,339 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:49:45,340 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:49:45,340 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:49:45,340 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:49:45,341 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:49:45,342 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:49:45,345 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:49:45,348 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:50:00,349 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:50:00,353 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:50:00,353 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:50:00,353 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:50:00,354 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:50:00,354 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:50:00,357 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:50:00,359 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:50:02,139 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:50:02,139 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:50:02,141 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=292.1ms, Packet Loss=0.0%
+2026-07-27 19:50:02,141 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=292.1ms, Packet Loss=0.0%
+2026-07-27 19:50:15,361 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:50:15,363 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:50:15,364 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:50:15,364 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:50:15,365 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:50:15,365 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:50:15,367 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:50:15,371 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:50:21,770 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:50:21,770 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:50:21,773 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=243.81ms, Packet Loss=0.0%
+2026-07-27 19:50:21,773 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=243.81ms, Packet Loss=0.0%
+2026-07-27 19:50:30,372 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:50:30,374 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:50:30,375 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:50:30,375 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:50:30,375 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:50:30,376 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:50:30,378 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:50:30,381 - network_resolver - INFO - Successfully executed resolution callback
+2026-07-27 19:50:41,934 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:50:41,934 - network_monitor - INFO - Discovered 20 devices on network
+2026-07-27 19:50:41,937 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=297.08ms, Packet Loss=0.0%
+2026-07-27 19:50:41,937 - network_monitor - INFO - Network status updated (REAL): Health=warning, Latency=297.08ms, Packet Loss=0.0%
+2026-07-27 19:50:45,383 - network_resolver - INFO - Active issues: 51, Resolved issues: 155
+2026-07-27 19:50:45,386 - network_resolver - INFO - Triggering 1 update callbacks...
+2026-07-27 19:50:45,386 - network_resolver - INFO - Executing update callback: emit_active_issues
+2026-07-27 19:50:45,387 - network_resolver - INFO - Successfully executed update callback
+2026-07-27 19:50:45,387 - network_resolver - INFO - Triggering 1 resolution callbacks...
+2026-07-27 19:50:45,387 - network_resolver - INFO - Executing resolution callback: emit_resolved_issues
+2026-07-27 19:50:45,390 - network_resolver - INFO - Loaded 155 items from resolution history
+2026-07-27 19:50:45,393 - network_resolver - INFO - Successfully executed resolution callback

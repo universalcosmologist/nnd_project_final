@@ -1,0 +1,13 @@
+Registering Socket.IO callbacks with NetworkResolver...
+Registered 1 update callbacks
+Registered 1 resolution callbacks
+Emitting active issues update...
+Active issues count: 51
+Error emitting active issues: 'NoneType' object has no attribute 'emit'
+Emitting resolved issues update...
+Resolved issues count: 155
+Error emitting resolved issues: 'NoneType' object has no attribute 'emit'
+Network monitoring started in background
+Starting web server with Socket.IO. Access the dashboard at http://localhost:5000
+ * Serving Flask app 'app'
+ * Debug mode: off
